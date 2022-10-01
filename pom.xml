@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>sg.darren</groupId>
-	<artifactId>batchdemo</artifactId>
+	<artifactId>springboot-batch-demo</artifactId>
 	<version>1.0.0</version>
 	<name>batch-demo</name>
 	<description>Demo project for Spring Boot</description>
