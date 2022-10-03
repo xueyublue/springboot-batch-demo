@@ -24,7 +24,7 @@ public class LoadController {
     private final Job job;
 
     @GetMapping
-    public BatchStatus loadUsers()
+    public BatchStatus loadEmployees()
             throws JobInstanceAlreadyCompleteException,
             JobExecutionAlreadyRunningException,
             JobParametersInvalidException,

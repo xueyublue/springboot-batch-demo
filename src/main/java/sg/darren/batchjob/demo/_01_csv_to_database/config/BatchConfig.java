@@ -46,7 +46,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public FlatFileItemReader<Employee> itemReader(@Value("${input.file}") Resource resource) {
+    public FlatFileItemReader<Employee> itemReader(@Value("${_01_.input.file}") Resource resource) {
         FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(resource);
         flatFileItemReader.setName("CsvReader");

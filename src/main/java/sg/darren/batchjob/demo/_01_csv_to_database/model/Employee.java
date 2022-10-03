@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -22,5 +22,7 @@ public class Employee {
     private String dept;
 
     private Integer salary;
+
+    private Date lastUpdatedDate;
 
 }

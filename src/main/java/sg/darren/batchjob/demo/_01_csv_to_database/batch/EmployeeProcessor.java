@@ -5,6 +5,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import sg.darren.batchjob.demo._01_csv_to_database.model.Employee;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +22,12 @@ public class EmployeeProcessor implements ItemProcessor<Employee, Employee> {
     }
 
     @Override
-    public Employee process(Employee user) throws Exception {
+    public Employee process(Employee user) {
         String deptIn = user.getDept();
         String deptConverted = DEPT_NAMES.get(deptIn);
         user.setDept(deptConverted);
         log.info(String.format("Converted Dept from %s to %s", deptIn, deptConverted));
+        user.setLastUpdatedDate(new Date());
         return user;
     }
 }
