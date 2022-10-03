@@ -1,13 +1,16 @@
 package sg.darren.batchjob.demo.csv_to_database.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity()
-@Table(name = "user")
-@Data
+@Table(name = "users")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
 
