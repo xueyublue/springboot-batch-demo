@@ -3,12 +3,8 @@ package sg.darren.batchjob.demo._03_read_process_write;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonFileItemWriter;
@@ -41,6 +37,7 @@ class ItemReadProcessWriteTest {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter("inputPath", new JobParameter("classpath:input.json"))
                 .addParameter("outputPath", new JobParameter("output/output.json"))
+                .addParameter("chunkSize", new JobParameter(1L))
                 .toJobParameters();
 
         // then
@@ -68,14 +65,15 @@ class ItemReadProcessWriteTest {
         @Bean
         public Job readWriteJob() {
             return jobBuilderFactory.get("readWriteJob")
-                    .start(step())
+                    .start(step(null))
                     .build();
         }
 
         @Bean
-        public Step step() {
+        @JobScope
+        public Step step(@Value("#{jobParameters['chunkSize']}") Integer chunkSize) {
             return stepBuilderFactory.get("readWriteJsonStep")
-                    .<Input, Output>chunk(1)
+                    .<Input, Output>chunk(chunkSize)
                     .reader(reader(null))
                     .processor(processor())
                     .writer(writer(null))
