@@ -18,6 +18,23 @@ import java.util.Map;
 @SpringBootTest(classes = HelloWorldTest.TestConfig.class)
 class HelloWorldTest {
 
+    @Autowired
+    private JobLauncherTestUtils jobLauncherTestUtils;
+
+    @Test
+    void test() throws Exception {
+        // given
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addParameter("output", new JobParameter("Hello World"))
+                .toJobParameters();
+
+        // then
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
+
+        // expect
+        Assertions.assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
+    }
+
     @Configuration
     @EnableBatchProcessing
     static class TestConfig {
@@ -46,23 +63,5 @@ class HelloWorldTest {
                     .start(step)
                     .build();
         }
-    }
-
-    @Autowired
-    private JobLauncherTestUtils jobLauncherTestUtils;
-
-
-    @Test
-    void helloWorldJobTest() throws Exception {
-        // given
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter("output", new JobParameter("Hello World"))
-                .toJobParameters();
-
-        // then
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-
-        // expect
-        Assertions.assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
     }
 }

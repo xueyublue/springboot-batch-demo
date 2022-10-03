@@ -32,6 +32,24 @@ import java.util.Date;
 @SpringBootTest(classes = ItemReadProcessWriteTest.TestConfig.class)
 class ItemReadProcessWriteTest {
 
+    @Autowired
+    private JobLauncherTestUtils jobLauncherTestUtils;
+
+    @Test
+    void test() throws Exception {
+        // given
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addParameter("inputPath", new JobParameter("classpath:input.json"))
+                .addParameter("outputPath", new JobParameter("output/output.json"))
+                .toJobParameters();
+
+        // then
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
+
+        // expect
+        Assertions.assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
+    }
+
     @Configuration
     @EnableBatchProcessing
     static class TestConfig {
@@ -128,24 +146,6 @@ class ItemReadProcessWriteTest {
                         '}';
             }
         }
-    }
-
-    @Autowired
-    private JobLauncherTestUtils jobLauncherTestUtils;
-
-    @Test
-    void readWriteJobTest() throws Exception {
-        // given
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter("inputPath", new JobParameter("classpath:input.json"))
-                .addParameter("outputPath", new JobParameter("output/output.json"))
-                .toJobParameters();
-
-        // then
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-
-        // expect
-        Assertions.assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
     }
 
 }
