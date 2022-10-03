@@ -6,6 +6,7 @@ import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
@@ -15,6 +16,7 @@ import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,17 +57,18 @@ class ItemReadProcessWriteTest {
         public Step step() {
             return stepBuilderFactory.get("readWriteJsonStep")
                     .<Input, Output>chunk(1)
-                    .reader(reader())
+                    .reader(reader(null))
                     .processor(processor())
                     .writer(writer())
                     .build();
         }
 
         @Bean
-        public JsonItemReader<Input> reader() {
+        @StepScope
+        public JsonItemReader<Input> reader(@Value("#{jobParameters['inputPath']}") String inputPath) {
             File file = null;
             try {
-                file = ResourceUtils.getFile("classpath:input.json");
+                file = ResourceUtils.getFile(inputPath);
             } catch (FileNotFoundException ex) {
                 throw new IllegalArgumentException(ex);
             }
@@ -91,10 +94,11 @@ class ItemReadProcessWriteTest {
         }
 
         @Bean
-        public ItemWriter<Output> writer() {
+        //@StepScope
+        public ItemWriter<Output> writer(/*@Value("#{jobParameters['outputPath']}") String outputPath*/) {
             Resource outputResource = new FileSystemResource("output/output.json");
             return new JsonFileItemWriterBuilder<Output>()
-                    .name("jsonItemReader")
+                    .name("jsonItemWriter")
                     .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
                     .resource(outputResource)
                     .build();
@@ -132,6 +136,8 @@ class ItemReadProcessWriteTest {
     void readWriteJobTest() throws Exception {
         // given
         JobParameters jobParameters = new JobParametersBuilder()
+                .addParameter("inputPath", new JobParameter("classpath:input.json"))
+                .addParameter("outputPath", new JobParameter("output/output.json"))
                 .toJobParameters();
 
         // then
