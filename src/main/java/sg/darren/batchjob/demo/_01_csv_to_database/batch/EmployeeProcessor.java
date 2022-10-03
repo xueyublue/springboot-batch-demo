@@ -23,6 +23,11 @@ public class EmployeeProcessor implements ItemProcessor<Employee, Employee> {
 
     @Override
     public Employee process(Employee user) {
+        // Skip data if department is 999 which indicating invalid record
+        if ("999".equalsIgnoreCase(user.getDept())) {
+            log.info("Skipped " + user);
+            return null;
+        }
         String deptIn = user.getDept();
         String deptConverted = DEPT_NAMES.get(deptIn);
         user.setDept(deptConverted);
