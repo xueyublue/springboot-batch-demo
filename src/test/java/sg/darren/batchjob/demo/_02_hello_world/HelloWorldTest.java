@@ -53,7 +53,7 @@ class HelloWorldTest {
 
 
     @Test
-    void test() throws Exception {
+    void helloWorldJobTest() throws Exception {
         // given
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter("output", new JobParameter("Hello World"))
