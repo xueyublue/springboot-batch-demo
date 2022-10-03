@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class Processor implements ItemProcessor<User, User> {
+public class UserProcessor implements ItemProcessor<User, User> {
 
     private static final Map<String, String> DEPT_NAMES = new HashMap<>();
 
-    public Processor() {
+    public UserProcessor() {
         DEPT_NAMES.put("001", "Information Technology");
         DEPT_NAMES.put("002", "Operations");
         DEPT_NAMES.put("003", "Sales and Marketing");
@@ -20,6 +20,8 @@ public class Processor implements ItemProcessor<User, User> {
 
     @Override
     public User process(User user) throws Exception {
-        return null;
+        String dept = DEPT_NAMES.get(user.getDept());
+        user.setDept(dept);
+        return user;
     }
 }

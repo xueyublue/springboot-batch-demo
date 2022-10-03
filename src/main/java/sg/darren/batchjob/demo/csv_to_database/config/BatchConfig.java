@@ -53,7 +53,7 @@ public class BatchConfig {
     }
 
     @Bean
-    private LineMapper<User> lineMapper() {
+    public LineMapper<User> lineMapper() {
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setDelimiter(",");
         delimitedLineTokenizer.setStrict(false);
