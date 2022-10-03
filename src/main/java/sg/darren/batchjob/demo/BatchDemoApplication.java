@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import sg.darren.batchjob.demo._02_hello_world.TriggerBatchJobService;
+import sg.darren.batchjob.demo._04_project_one.TriggerProjectOne;
 
 @SpringBootApplication
 @EnableBatchProcessing
@@ -17,9 +18,13 @@ public class BatchDemoApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(BatchDemoApplication.class, args);
 
-        TriggerBatchJobService triggerBatchJobService = context.getBean(TriggerBatchJobService.class);
         try {
+            TriggerBatchJobService triggerBatchJobService = context.getBean(TriggerBatchJobService.class);
             triggerBatchJobService.runJob();
+
+            TriggerProjectOne triggerProjectOne = context.getBean(TriggerProjectOne.class);
+            triggerProjectOne.runJob();
+
         } catch (JobInstanceAlreadyCompleteException | JobExecutionAlreadyRunningException |
                  JobParametersInvalidException | JobRestartException e) {
             throw new RuntimeException(e);
