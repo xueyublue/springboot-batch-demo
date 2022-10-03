@@ -55,8 +55,7 @@ public class BatchConfig {
         return flatFileItemReader;
     }
 
-    @Bean
-    public LineMapper<Employee> lineMapper() {
+    private LineMapper<Employee> lineMapper() {
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setDelimiter(",");
         delimitedLineTokenizer.setStrict(false);
