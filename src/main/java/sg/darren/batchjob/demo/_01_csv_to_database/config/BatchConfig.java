@@ -1,5 +1,6 @@
 package sg.darren.batchjob.demo._01_csv_to_database.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -17,20 +18,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import sg.darren.batchjob.demo._01_csv_to_database.model.User;
+import sg.darren.batchjob.demo._01_csv_to_database.model.Employee;
 
 @Configuration
+@RequiredArgsConstructor
 public class BatchConfig {
 
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+
     @Bean
-    public Job job(JobBuilderFactory jobBuilderFactory,
-                   StepBuilderFactory stepBuilderFactory,
-                   ItemReader<User> itemReader,
-                   ItemProcessor<User, User> itemProcessor,
-                   ItemWriter<User> itemWriter) {
+    public Job job(ItemReader<Employee> itemReader,
+                   ItemProcessor<Employee, Employee> itemProcessor,
+                   ItemWriter<Employee> itemWriter) {
 
         Step step = stepBuilderFactory.get("LoadUsers")
-                .<User, User>chunk(100)
+                .<Employee, Employee>chunk(100)
                 .reader(itemReader)
                 .processor(itemProcessor)
                 .writer(itemWriter)
@@ -43,8 +46,8 @@ public class BatchConfig {
     }
 
     @Bean
-    public FlatFileItemReader<User> itemReader(@Value("${input.file}") Resource resource) {
-        FlatFileItemReader<User> flatFileItemReader = new FlatFileItemReader<>();
+    public FlatFileItemReader<Employee> itemReader(@Value("${input.file}") Resource resource) {
+        FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(resource);
         flatFileItemReader.setName("CsvReader");
         flatFileItemReader.setLinesToSkip(1);   // skip header
@@ -53,16 +56,16 @@ public class BatchConfig {
     }
 
     @Bean
-    public LineMapper<User> lineMapper() {
+    public LineMapper<Employee> lineMapper() {
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setDelimiter(",");
         delimitedLineTokenizer.setStrict(false);
         delimitedLineTokenizer.setNames("id", "name", "dept", "salary");
 
-        BeanWrapperFieldSetMapper<User> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        beanWrapperFieldSetMapper.setTargetType(User.class);
+        BeanWrapperFieldSetMapper<Employee> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(Employee.class);
 
-        DefaultLineMapper<User> defaultLineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<Employee> defaultLineMapper = new DefaultLineMapper<>();
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
 
