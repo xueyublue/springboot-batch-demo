@@ -4,8 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity()
-@Table(name = "users")
+@Entity
+@Table(name = "my_user")
 @Getter
 @Setter
 @ToString
