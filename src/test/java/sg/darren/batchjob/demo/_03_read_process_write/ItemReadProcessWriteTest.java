@@ -11,6 +11,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
+import org.springframework.batch.item.json.JsonFileItemWriter;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
@@ -59,7 +60,7 @@ class ItemReadProcessWriteTest {
                     .<Input, Output>chunk(1)
                     .reader(reader(null))
                     .processor(processor())
-                    .writer(writer())
+                    .writer(writer(null))
                     .build();
         }
 
@@ -94,9 +95,9 @@ class ItemReadProcessWriteTest {
         }
 
         @Bean
-        //@StepScope
-        public ItemWriter<Output> writer(/*@Value("#{jobParameters['outputPath']}") String outputPath*/) {
-            Resource outputResource = new FileSystemResource("output/output.json");
+        @StepScope
+        public JsonFileItemWriter<Output> writer(@Value("#{jobParameters['outputPath']}") String outputPath) {
+            Resource outputResource = new FileSystemResource(outputPath);
             return new JsonFileItemWriterBuilder<Output>()
                     .name("jsonItemWriter")
                     .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
