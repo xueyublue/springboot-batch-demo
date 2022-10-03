@@ -7,6 +7,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +22,7 @@ public class HelloWorldConfig {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
+    @Qualifier("helloWorldJob")
     public Job helloWorldJob() {
         Step step = stepBuilderFactory.get("step")
                 .tasklet((stepContribution, chunkContext) -> {
