@@ -47,27 +47,27 @@ public class BatchConfig {
 
     @Bean
     public FlatFileItemReader<Employee> itemReader(@Value("${_01_.input.file}") Resource resource) {
-        FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(resource);
-        flatFileItemReader.setName("CsvReader");
-        flatFileItemReader.setLinesToSkip(1);   // skip header
-        flatFileItemReader.setLineMapper(lineMapper());
-        return flatFileItemReader;
+        FlatFileItemReader<Employee> itemReader = new FlatFileItemReader<>();
+        itemReader.setResource(resource);
+        itemReader.setName("CsvReader");
+        itemReader.setLinesToSkip(1);   // skip header
+        itemReader.setLineMapper(lineMapper());
+        return itemReader;
     }
 
     private LineMapper<Employee> lineMapper() {
-        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
-        delimitedLineTokenizer.setDelimiter(",");
-        delimitedLineTokenizer.setStrict(false);
-        delimitedLineTokenizer.setNames("id", "name", "dept", "salary");
+        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+        lineTokenizer.setDelimiter(",");
+        lineTokenizer.setStrict(false);
+        lineTokenizer.setNames("id", "name", "dept", "salary");
 
-        BeanWrapperFieldSetMapper<Employee> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        beanWrapperFieldSetMapper.setTargetType(Employee.class);
+        BeanWrapperFieldSetMapper<Employee> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(Employee.class);
 
-        DefaultLineMapper<Employee> defaultLineMapper = new DefaultLineMapper<>();
-        defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
-        defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
+        DefaultLineMapper<Employee> lineMapper = new DefaultLineMapper<>();
+        lineMapper.setLineTokenizer(lineTokenizer);
+        lineMapper.setFieldSetMapper(fieldSetMapper);
 
-        return defaultLineMapper;
+        return lineMapper;
     }
 }
