@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import sg.darren.batchjob.demo._01_csv_to_database.model.Employee;
 
 @Configuration
@@ -37,6 +38,7 @@ public class BatchConfig {
                 .reader(itemReader)
                 .processor(itemProcessor)
                 .writer(itemWriter)
+                .taskExecutor(taskExecutor(10))
                 .build();
 
         return jobBuilderFactory.get("CsvToDatabase")
@@ -69,5 +71,12 @@ public class BatchConfig {
         lineMapper.setFieldSetMapper(fieldSetMapper);
 
         return lineMapper;
+    }
+
+    @Bean
+    public SimpleAsyncTaskExecutor taskExecutor(Integer limit) {
+        SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+        simpleAsyncTaskExecutor.setConcurrencyLimit(limit);
+        return simpleAsyncTaskExecutor;
     }
 }
