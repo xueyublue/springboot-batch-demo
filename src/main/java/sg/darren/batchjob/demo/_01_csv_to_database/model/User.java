@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo.csv_to_database.model;
+package sg.darren.batchjob.demo._01_csv_to_database.model;
 
 import lombok.*;
 
