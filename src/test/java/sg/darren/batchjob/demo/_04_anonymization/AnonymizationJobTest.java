@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_project_one;
+package sg.darren.batchjob.demo._04_anonymization;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,16 +13,16 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
-@SpringBootTest(classes = {ProjectOneTest.TestConfig.class,
-        ProjectOneConfig.class})
-class ProjectOneTest implements JobParameterKeys {
+@SpringBootTest(classes = {AnonymizationJobTest.TestConfig.class,
+        AnonymizationJobConfig.class})
+class AnonymizationJobTest implements AnonymizationJobParameterKeys {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    @Qualifier("projectOneJob")
-    private Job projectOneJob;
+    @Qualifier("anonymizationJob")
+    private Job job;
 
     @Test
     void test() throws Exception {
@@ -31,7 +31,7 @@ class ProjectOneTest implements JobParameterKeys {
                 .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
-        jobLauncherTestUtils.setJob(projectOneJob);
+        jobLauncherTestUtils.setJob(job);
         // expect
         Assertions.assertThat(jobLauncherTestUtils.launchJob(jobParameters).getStatus())
                 .isNotNull()
@@ -47,7 +47,7 @@ class ProjectOneTest implements JobParameterKeys {
                 .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
-        jobLauncherTestUtils.setJob(projectOneJob);
+        jobLauncherTestUtils.setJob(job);
         // expect
         Assertions.assertThatThrownBy(() -> jobLauncherTestUtils.launchJob(jobParameters))
                 .isInstanceOf(JobParametersInvalidException.class)

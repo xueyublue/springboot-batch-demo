@@ -1,11 +1,11 @@
-package sg.darren.batchjob.demo._04_project_one;
+package sg.darren.batchjob.demo._04_anonymization;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
 
-public class ProjectOneParameterValidator extends DefaultJobParametersValidator implements JobParameterKeys {
+public class AnonymizationJobParameterValidator extends DefaultJobParametersValidator implements AnonymizationJobParameterKeys {
 
     private static final String[] REQUIRED_KEYS = {
             INPUT_PATH,
@@ -16,7 +16,7 @@ public class ProjectOneParameterValidator extends DefaultJobParametersValidator 
             CHUNK_SIZE,
     };
 
-    public ProjectOneParameterValidator() {
+    public AnonymizationJobParameterValidator() {
         super(REQUIRED_KEYS, OPTIONAL_KEYS);
     }
 

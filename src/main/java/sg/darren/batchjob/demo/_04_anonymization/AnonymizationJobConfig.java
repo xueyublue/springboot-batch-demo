@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_project_one;
+package sg.darren.batchjob.demo._04_anonymization;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -28,17 +28,17 @@ import java.io.FileNotFoundException;
 @Configuration
 @EnableBatchProcessing
 @RequiredArgsConstructor
-public class ProjectOneConfig implements JobParameterKeys {
+public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    @Qualifier("projectOneJob")
-    public Job projectOneJob() {
-        return jobBuilderFactory.get("projectOneJob")
+    @Qualifier("anonymizationJob")
+    public Job anonymizationJob() {
+        return jobBuilderFactory.get("anonymizationJob")
                 .start(step())
-                .validator(new ProjectOneParameterValidator())
+                .validator(new AnonymizationJobParameterValidator())
                 .build();
     }
 

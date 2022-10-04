@@ -1,6 +1,6 @@
-package sg.darren.batchjob.demo._04_project_one;
+package sg.darren.batchjob.demo._04_anonymization;
 
-public interface JobParameterKeys {
+public interface AnonymizationJobParameterKeys {
 
     public static final String INPUT_PATH = "inputPath";
     public static final String OUTPUT_PATH = "outputPath";

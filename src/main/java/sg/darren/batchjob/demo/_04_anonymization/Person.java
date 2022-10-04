@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_project_one;
+package sg.darren.batchjob.demo._04_anonymization;
 
 import lombok.*;
 
