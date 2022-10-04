@@ -23,6 +23,7 @@ import java.io.File;
 class AnonymizationJobTest implements AnonymizationJobParameterKeys {
 
     private static final String INPUT_FILE = "classpath:persons-unit-test.json";
+    private static final String INPUT_FILE_INVALID_EXTENSION = "classpath:persons-unit-test.xml";
     private static final String OUTPUT_FILE = "public-unit-test/personsOutput.json";
 
     @Autowired
@@ -60,7 +61,7 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
     @Test
     void test_invalidInputFileExtension() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter(INPUT_PATH, new JobParameter(INPUT_FILE))
+                .addParameter(INPUT_PATH, new JobParameter("persons.xml"))
                 .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
@@ -68,7 +69,7 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
         // expect
         Assertions.assertThatThrownBy(() -> jobLauncherTestUtils.launchJob(jobParameters))
                 .isInstanceOf(JobParametersInvalidException.class)
-                .hasMessageContaining("Input file  must be in JSON format");
+                .hasMessageContaining("Input file must be in JSON format");
 
     }
 
