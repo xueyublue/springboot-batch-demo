@@ -13,6 +13,8 @@ public class AnonymizationJobParameterValidator extends DefaultJobParametersVali
     };
 
     private static final String[] OPTIONAL_KEYS = {
+            UPLOAD_PATH,
+            ERROR_PATH,
             CHUNK_SIZE,
             ANONYMIZATION_FLAG
     };
