@@ -13,7 +13,6 @@ public class AnonymizationJobParameterValidator extends DefaultJobParametersVali
     };
 
     private static final String[] OPTIONAL_KEYS = {
-            CHUNK_SIZE,
     };
 
     public AnonymizationJobParameterValidator() {

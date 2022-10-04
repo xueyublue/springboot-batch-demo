@@ -20,10 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.ResourceUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
+import sg.darren.batchjob.demo.utils.Utils;
 
 @Configuration
 @EnableBatchProcessing
@@ -32,6 +29,7 @@ public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final FileHandlingJobExecutionListener fileHandlingJobExecutionListener;
 
     @Bean
     @Qualifier("anonymizationJob")
@@ -39,6 +37,7 @@ public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
         return jobBuilderFactory.get("anonymizationJob")
                 .start(step())
                 .validator(new AnonymizationJobParameterValidator())
+                .listener(fileHandlingJobExecutionListener)
                 .build();
     }
 
@@ -55,16 +54,11 @@ public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
     @Bean
     @StepScope
     public JsonItemReader<Person> reader(@Value(INPUT_PATH_REF) String inputPath) {
-        File file = null;
-        try {
-            file = ResourceUtils.getFile(inputPath);
-        } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        FileSystemResource resource = Utils.getFileResource(inputPath);
         return new JsonItemReaderBuilder<Person>()
                 .name("jsonItemReader")
                 .jsonObjectReader(new JacksonJsonObjectReader<>(Person.class))
-                .resource(new FileSystemResource(file))
+                .resource(resource)
                 .build();
     }
 

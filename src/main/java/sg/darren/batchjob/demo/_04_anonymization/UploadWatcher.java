@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import sg.darren.batchjob.demo.utils.Utils;
 
 import java.io.File;
 
@@ -19,7 +20,7 @@ public class UploadWatcher {
     @Autowired
     private AnonymizationJobRun anonymizationJobRun;
 
-    private static final String UPLOAD_DIR = "public/upload";
+    private static final String UPLOAD_DIR = Utils.getWorkDirSubDirectory("public/upload");
 
     @EventListener(value = ApplicationReadyEvent.class)
     public void watchAfterApplicationStarted() throws Exception {

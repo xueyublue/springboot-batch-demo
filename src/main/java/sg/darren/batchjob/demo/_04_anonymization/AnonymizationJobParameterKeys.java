@@ -4,6 +4,8 @@ public interface AnonymizationJobParameterKeys {
 
     public static final String INPUT_PATH = "inputPath";
     public static final String OUTPUT_PATH = "outputPath";
+    public static final String ERROR_PATH = "errorPath";
+    public static final String UPLOAD_PATH = "uploadPath";
     public static final String CHUNK_SIZE = "chunkSize";
 
     public static final String INPUT_PATH_REF = "#{jobParameters['" + INPUT_PATH + "']}";

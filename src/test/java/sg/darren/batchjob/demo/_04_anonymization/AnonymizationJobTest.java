@@ -2,12 +2,14 @@ package sg.darren.batchjob.demo._04_anonymization;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,6 +26,9 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
     @Qualifier("anonymizationJob")
     private Job job;
 
+    @MockBean
+    private FileHandlingJobExecutionListener fileHandlingJobExecutionListener;
+
     @Test
     void test() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
@@ -32,12 +37,17 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncherTestUtils.setJob(job);
+
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
         // expect
-        Assertions.assertThat(jobLauncherTestUtils.launchJob(jobParameters).getStatus())
+        Assertions.assertThat(jobExecution.getStatus())
                 .isNotNull()
                 .isEqualByComparingTo(BatchStatus.COMPLETED);
         String output = Assertions.contentOf(new File("output/output.json"));
         Assertions.assertThat(output).doesNotContain("Daliah Shah");
+        // to verify if listener is used to handle before/after "jobExecution"
+        Mockito.verify(fileHandlingJobExecutionListener).beforeJob(jobExecution);
+        Mockito.verify(fileHandlingJobExecutionListener).afterJob(jobExecution);
     }
 
     @Test
