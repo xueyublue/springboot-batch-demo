@@ -13,6 +13,8 @@ public class AnonymizationJobParameterValidator extends DefaultJobParametersVali
     };
 
     private static final String[] OPTIONAL_KEYS = {
+            CHUNK_SIZE,
+            ANONYMIZATION_FLAG
     };
 
     public AnonymizationJobParameterValidator() {
@@ -22,10 +24,18 @@ public class AnonymizationJobParameterValidator extends DefaultJobParametersVali
     @Override
     public void validate(JobParameters parameters) throws JobParametersInvalidException {
         super.validate(parameters);
+        // validate INPUT_PATH
         String inputPath = parameters.getString(INPUT_PATH);
         String extension = FilenameUtils.getExtension(inputPath);
         if (extension == null || !extension.equalsIgnoreCase("json")) {
-            throw new JobParametersInvalidException("Input file  must be in JSON format");
+            throw new JobParametersInvalidException("Input file must be in JSON format");
+        }
+        // validate INPUT_PATH
+        String i = parameters.getString(ANONYMIZATION_FLAG);
+        if (i != null
+                && !"true".equalsIgnoreCase(i)
+                && !"false".equalsIgnoreCase(i)) {
+            throw new JobParametersInvalidException("Anonymization Flag must be a boolean.");
         }
     }
 }

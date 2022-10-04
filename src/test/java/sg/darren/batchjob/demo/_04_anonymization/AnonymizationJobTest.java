@@ -22,6 +22,9 @@ import java.io.File;
         AnonymizationJobConfig.class})
 class AnonymizationJobTest implements AnonymizationJobParameterKeys {
 
+    private static final String INPUT_FILE = "classpath:persons-unit-test.json";
+    private static final String OUTPUT_FILE = "public-unit-test/personsOutput.json";
+
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
@@ -35,8 +38,9 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
     @Test
     void test() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter(INPUT_PATH, new JobParameter("classpath:persons.json"))
-                .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
+                .addParameter(INPUT_PATH, new JobParameter(INPUT_FILE))
+                .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
+                .addParameter(ANONYMIZATION_FLAG, new JobParameter("true"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncherTestUtils.setJob(job);
@@ -46,7 +50,7 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
         Assertions.assertThat(jobExecution.getStatus())
                 .isNotNull()
                 .isEqualByComparingTo(BatchStatus.COMPLETED);
-        String output = Assertions.contentOf(new File("output/output.json"));
+        String output = Assertions.contentOf(new File(OUTPUT_FILE));
         Assertions.assertThat(output).doesNotContain("Daliah Shah");
         // to verify if listener is used to handle before/after "jobExecution"
         Mockito.verify(fileHandlingJobExecutionListener).beforeJob(jobExecution);
@@ -56,8 +60,8 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
     @Test
     void test_invalidInputFileExtension() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter(INPUT_PATH, new JobParameter("classpath:persons.xml"))
-                .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
+                .addParameter(INPUT_PATH, new JobParameter(INPUT_FILE))
+                .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncherTestUtils.setJob(job);

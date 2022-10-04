@@ -48,7 +48,7 @@ public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
         return stepBuilderFactory.get("step")
                 .<Person, Person>chunk(1)
                 .reader(reader(null))
-                .processor(processor())
+                .processor(processor(null))
                 .writer(writer(null))
                 .build();
     }
@@ -65,16 +65,18 @@ public class AnonymizationJobConfig implements AnonymizationJobParameterKeys {
     }
 
     @Bean
-    public ItemProcessor<Person, Person> processor() {
+    @StepScope
+    public ItemProcessor<Person, Person> processor(@Value(ANONYMIZATION_FLAG_REF) String flag) {
         return new ItemProcessor<Person, Person>() {
             @Override
             public Person process(Person input) throws Exception {
                 if (Boolean.FALSE.equals(input.getIsCustomer())) {
                     return null;
                 }
+                boolean anonymizationFlag = flag != null && flag.equalsIgnoreCase("true");
                 return Person.builder()
-                        .name(input.getName())
-                        .email(input.getEmail())
+                        .name(anonymizationFlag ? "John Doe" : input.getName())
+                        .email(anonymizationFlag ? "" : input.getEmail())
                         .birthday(input.getBirthday())
                         .revenue(input.getRevenue())
                         .isCustomer(input.getIsCustomer())

@@ -30,11 +30,6 @@ public class AnonymizationJobRun implements AnonymizationJobParameterKeys {
 
     public void runJob(File uploadedFile) {
         log.info("Processing file: {}", uploadedFile);
-//        JobParameters jobParameters = new JobParametersBuilder()
-//                .addParameter(INPUT_PATH, new JobParameter("classpath:persons.json"))
-//                .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
-//                .addParameter(CHUNK_SIZE, new JobParameter(1L))
-//                .toJobParameters();
 
         String uploadedFilePath = uploadedFile.getAbsolutePath();
 
