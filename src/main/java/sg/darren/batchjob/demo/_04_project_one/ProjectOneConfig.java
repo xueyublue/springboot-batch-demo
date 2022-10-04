@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonFileItemWriter;
@@ -27,7 +28,7 @@ import java.io.FileNotFoundException;
 @Configuration
 @EnableBatchProcessing
 @RequiredArgsConstructor
-public class ProjectOneConfig {
+public class ProjectOneConfig implements JobParameterKeys {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -37,6 +38,7 @@ public class ProjectOneConfig {
     public Job projectOneJob() {
         return jobBuilderFactory.get("projectOneJob")
                 .start(step())
+                .validator(new ProjectOneParameterValidator())
                 .build();
     }
 
@@ -45,13 +47,14 @@ public class ProjectOneConfig {
         return stepBuilderFactory.get("step")
                 .<Person, Person>chunk(1)
                 .reader(reader(null))
+                .processor(processor())
                 .writer(writer(null))
                 .build();
     }
 
     @Bean
     @StepScope
-    public JsonItemReader<Person> reader(@Value("#{jobParameters['inputPath']}") String inputPath) {
+    public JsonItemReader<Person> reader(@Value(INPUT_PATH_REF) String inputPath) {
         File file = null;
         try {
             file = ResourceUtils.getFile(inputPath);
@@ -66,8 +69,27 @@ public class ProjectOneConfig {
     }
 
     @Bean
+    public ItemProcessor<Person, Person> processor() {
+        return new ItemProcessor<Person, Person>() {
+            @Override
+            public Person process(Person input) throws Exception {
+                if (Boolean.FALSE.equals(input.getIsCustomer())) {
+                    return null;
+                }
+                return Person.builder()
+                        .name(input.getName())
+                        .email(input.getEmail())
+                        .birthday(input.getBirthday())
+                        .revenue(input.getRevenue())
+                        .isCustomer(input.getIsCustomer())
+                        .build();
+            }
+        };
+    }
+
+    @Bean
     @StepScope
-    public JsonFileItemWriter<Person> writer(@Value("#{jobParameters['outputPath']}") String outputPath) {
+    public JsonFileItemWriter<Person> writer(@Value(OUTPUT_PATH_REF) String outputPath) {
         Resource outputResource = new FileSystemResource(outputPath);
         return new JsonFileItemWriterBuilder<Person>()
                 .name("jsonItemWriter")

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TriggerProjectOne {
+public class ProjectOneTrigger implements JobParameterKeys {
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -25,9 +25,9 @@ public class TriggerProjectOne {
             JobParametersInvalidException,
             JobRestartException {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter("inputPath", new JobParameter("classpath:persons.json"))
-                .addParameter("outputPath", new JobParameter("output/personsOutput.json"))
-                .addParameter("chunkSize", new JobParameter(1L))
+                .addParameter(INPUT_PATH, new JobParameter("classpath:persons.json"))
+                .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))
+                .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncher.run(projectOneJob, jobParameters);
     }
