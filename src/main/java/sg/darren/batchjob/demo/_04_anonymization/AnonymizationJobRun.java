@@ -24,6 +24,7 @@ public class AnonymizationJobRun implements AnonymizationJobParameterKeys {
     private Job job;
 
     public void runJob(File file) {
+        log.info("Processing file: {}", file);
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter(INPUT_PATH, new JobParameter("classpath:persons.json"))
                 .addParameter(OUTPUT_PATH, new JobParameter("output/personsOutput.json"))

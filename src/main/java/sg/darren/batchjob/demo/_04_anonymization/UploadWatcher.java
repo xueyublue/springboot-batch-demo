@@ -29,7 +29,10 @@ public class UploadWatcher {
 
     private void triggerBatchJobToProcessExistingFiles() {
         FileUtils.listFiles(new File(UPLOAD_DIR), new String[]{"json"}, false)
-                .forEach(file -> anonymizationJobRun.runJob(file));
+                .forEach(file -> {
+                    log.info("Existing file detected: {}", file);
+                    anonymizationJobRun.runJob(file);
+                });
     }
 
     private void createWatcherForNewFilesUpload() throws Exception {
@@ -38,7 +41,8 @@ public class UploadWatcher {
         observer.addListener(new FileAlterationListenerAdaptor() {
             @Override
             public void onFileCreate(File file) {
-                log.info("File created: {}", file);
+                log.info("New file detected: {}", file);
+                anonymizationJobRun.runJob(file);
             }
         });
         monitor.addObserver(observer);
