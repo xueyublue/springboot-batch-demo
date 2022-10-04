@@ -23,7 +23,6 @@ import java.io.File;
 class AnonymizationJobTest implements AnonymizationJobParameterKeys {
 
     private static final String INPUT_FILE = "classpath:persons-unit-test.json";
-    private static final String INPUT_FILE2 = "classpath:persons-unit-test2.json";
     private static final String OUTPUT_FILE = "public-unit-test/personsOutput.json";
 
     @Autowired
@@ -41,6 +40,8 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter(INPUT_PATH, new JobParameter(INPUT_FILE))
                 .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
+                .addParameter(UPLOAD_PATH, new JobParameter("ignored"))
+                .addParameter(ERROR_PATH, new JobParameter("ignored"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncherTestUtils.setJob(job);
@@ -62,6 +63,8 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter(INPUT_PATH, new JobParameter(INPUT_FILE))
                 .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
+                .addParameter(UPLOAD_PATH, new JobParameter("ignored"))
+                .addParameter(ERROR_PATH, new JobParameter("ignored"))
                 .addParameter(ANONYMIZATION_FLAG, new JobParameter("true"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
@@ -84,6 +87,8 @@ class AnonymizationJobTest implements AnonymizationJobParameterKeys {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addParameter(INPUT_PATH, new JobParameter("persons.xml"))
                 .addParameter(OUTPUT_PATH, new JobParameter(OUTPUT_FILE))
+                .addParameter(UPLOAD_PATH, new JobParameter("ignored"))
+                .addParameter(ERROR_PATH, new JobParameter("ignored"))
                 .addParameter(CHUNK_SIZE, new JobParameter(1L))
                 .toJobParameters();
         jobLauncherTestUtils.setJob(job);

@@ -9,12 +9,12 @@ public class AnonymizationJobParameterValidator extends DefaultJobParametersVali
 
     private static final String[] REQUIRED_KEYS = {
             INPUT_PATH,
-            OUTPUT_PATH
+            OUTPUT_PATH,
+            UPLOAD_PATH,
+            ERROR_PATH,
     };
 
     private static final String[] OPTIONAL_KEYS = {
-            UPLOAD_PATH,
-            ERROR_PATH,
             CHUNK_SIZE,
             ANONYMIZATION_FLAG
     };
