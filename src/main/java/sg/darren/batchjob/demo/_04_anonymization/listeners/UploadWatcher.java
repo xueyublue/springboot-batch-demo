@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_anonymization;
+package sg.darren.batchjob.demo._04_anonymization.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import sg.darren.batchjob.demo._04_anonymization.AnonymizationJobRun;
 import sg.darren.batchjob.demo.utils.Utils;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_anonymization;
+package sg.darren.batchjob.demo._04_anonymization.config;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.batch.core.JobParameters;

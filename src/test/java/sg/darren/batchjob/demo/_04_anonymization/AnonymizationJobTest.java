@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import sg.darren.batchjob.demo._04_anonymization.config.AnonymizationJobConfig;
+import sg.darren.batchjob.demo._04_anonymization.config.AnonymizationJobParameterKeys;
+import sg.darren.batchjob.demo._04_anonymization.listeners.FileHandlingJobExecutionListener;
 
 import java.io.File;
 

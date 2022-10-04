@@ -1,4 +1,4 @@
-package sg.darren.batchjob.demo._04_anonymization;
+package sg.darren.batchjob.demo._04_anonymization.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import sg.darren.batchjob.demo._04_anonymization.listeners.FileHandlingJobExecutionListener;
+import sg.darren.batchjob.demo._04_anonymization.model.Person;
 import sg.darren.batchjob.demo.utils.Utils;
 
 @Configuration

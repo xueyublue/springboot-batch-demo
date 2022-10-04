@@ -12,6 +12,7 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import sg.darren.batchjob.demo._04_anonymization.config.AnonymizationJobParameterKeys;
 import sg.darren.batchjob.demo.utils.Utils;
 
 import java.io.File;

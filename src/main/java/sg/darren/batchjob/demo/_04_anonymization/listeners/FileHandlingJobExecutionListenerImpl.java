@@ -1,10 +1,11 @@
-package sg.darren.batchjob.demo._04_anonymization;
+package sg.darren.batchjob.demo._04_anonymization.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.stereotype.Component;
+import sg.darren.batchjob.demo._04_anonymization.config.AnonymizationJobParameterKeys;
 import sg.darren.batchjob.demo.utils.Utils;
 
 import java.io.File;
