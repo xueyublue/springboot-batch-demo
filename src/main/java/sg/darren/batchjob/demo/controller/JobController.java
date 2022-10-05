@@ -60,7 +60,7 @@ public class JobController {
             JobRestartException {
         // insert initial data
         if (databaseToCsvRepository.findAll().isEmpty()) {
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 5; i++) {
                 databaseToCsvRepository.save(DatabaseToCsvEntity.builder()
                         .firstName(new Date().toString())
                         .lastName(new Date().toString())

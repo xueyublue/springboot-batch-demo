@@ -46,6 +46,7 @@ public class DatabaseToCsvJobConfig {
         return stepBuilderFactory.get("databaseToCsv")
                 .<DatabaseToCsvEntity, DatabaseToCsvEntity>chunk(10)
                 .reader(databaseToCsvReader())
+                .processor(databaseToCsvProcessor())
                 .writer(databaseToCsvWriter())
                 .build();
     }
