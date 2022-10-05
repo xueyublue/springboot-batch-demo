@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sg.darren.batchjob.demo._03_database_to_csv.DatabaseToCsvEntity;
+import sg.darren.batchjob.demo._03_database_to_csv.DatabaseToCsvRepository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +31,9 @@ public class JobController {
     @Autowired
     @Qualifier("databaseToCsvJob")
     private Job databaseToCsvJob;
+
+    @Autowired
+    private DatabaseToCsvRepository databaseToCsvRepository;
 
     @GetMapping("/csvToDatabase")
     public BatchStatus csvToDatabase()
@@ -52,6 +58,17 @@ public class JobController {
             JobExecutionAlreadyRunningException,
             JobParametersInvalidException,
             JobRestartException {
+        // insert initial data
+        if (databaseToCsvRepository.findAll().isEmpty()) {
+            for (int i = 0; i < 100; i++) {
+                databaseToCsvRepository.save(DatabaseToCsvEntity.builder()
+                        .firstName(new Date().toString())
+                        .lastName(new Date().toString())
+                        .email(new Date().toString() + "@gmail.com")
+                        .build());
+            }
+        }
+        // run job
         Map<String, JobParameter> map = new HashMap<>();
         map.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(map);

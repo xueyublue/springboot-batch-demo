@@ -5,6 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -43,7 +44,7 @@ public class DatabaseToCsvJobConfig {
     @Qualifier("databaseToCsvStep")
     public Step databaseToCsvStep() {
         return stepBuilderFactory.get("databaseToCsv")
-                .<Student, Student>chunk(10)
+                .<DatabaseToCsvEntity, DatabaseToCsvEntity>chunk(10)
                 .reader(databaseToCsvReader())
                 .writer(databaseToCsvWriter())
                 .build();
@@ -51,30 +52,39 @@ public class DatabaseToCsvJobConfig {
 
     @Bean
     @Qualifier("databaseToCsvReader")
-    public JdbcCursorItemReader<Student> databaseToCsvReader() {
-        JdbcCursorItemReader<Student> reader = new JdbcCursorItemReader<>();
+    public JdbcCursorItemReader<DatabaseToCsvEntity> databaseToCsvReader() {
+        JdbcCursorItemReader<DatabaseToCsvEntity> reader = new JdbcCursorItemReader<>();
         reader.setDataSource(dataSource);
-        reader.setSql("SELECT id, first_name, last_name, email FROM student");
-        reader.setRowMapper((rs, rowNum) -> Student.builder()
-                .id(rs.getLong("id"))
-                .firstName(rs.getString("firstName"))
-                .lastName(rs.getString("lastName"))
+        reader.setSql("SELECT id, first_name, last_name, email FROM database_to_csv");
+        reader.setRowMapper((rs, rowNum) -> DatabaseToCsvEntity.builder()
+                .id(rs.getInt("id"))
+                .firstName(rs.getString("first_name"))
+                .lastName(rs.getString("last_name"))
                 .email(rs.getString("email"))
                 .build());
         return reader;
     }
 
     @Bean
+    @Qualifier("databaseToCsvProcessor")
+    public ItemProcessor<DatabaseToCsvEntity, DatabaseToCsvEntity> databaseToCsvProcessor() {
+        return input -> {
+            input.setEmail(input.getEmail() != null ? input.getEmail().toUpperCase() : "");
+            return input;
+        };
+    }
+
+    @Bean
     @Qualifier("databaseToCsvWriter")
-    public FlatFileItemWriter<Student> databaseToCsvWriter() {
-        BeanWrapperFieldExtractor<Student> extractor = new BeanWrapperFieldExtractor<>();
+    public FlatFileItemWriter<DatabaseToCsvEntity> databaseToCsvWriter() {
+        BeanWrapperFieldExtractor<DatabaseToCsvEntity> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(new String[]{"id", "firstName", "lastName", "email"});
 
-        DelimitedLineAggregator<Student> lineAggregator = new DelimitedLineAggregator<>();
+        DelimitedLineAggregator<DatabaseToCsvEntity> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setFieldExtractor(extractor);
 
-        FlatFileItemWriter<Student> writer = new FlatFileItemWriter<>();
-        writer.setResource(new FileSystemResource("_02_/databaseToCsvOutput.csv"));
+        FlatFileItemWriter<DatabaseToCsvEntity> writer = new FlatFileItemWriter<>();
+        writer.setResource(new FileSystemResource("_03_database_to_csv/output.csv"));
         writer.setLineAggregator(lineAggregator);
 
         return writer;
