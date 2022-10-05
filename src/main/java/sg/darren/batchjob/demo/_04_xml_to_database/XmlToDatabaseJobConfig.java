@@ -8,6 +8,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
@@ -35,6 +36,9 @@ public class XmlToDatabaseJobConfig {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private XmlToDatabaseRepository xmlToDatabaseRepository;
+
     @Bean
     @Qualifier("xmlToDatabaseJob")
     public Job xmlToDatabaseJob() {
@@ -49,10 +53,10 @@ public class XmlToDatabaseJobConfig {
     @Qualifier("xmlToDatabaseStep")
     public Step xmlToDatabaseStep() {
         return stepBuilderFactory.get("xmlToDatabaseJobStep")
-                .<XmlToDatabaseDto, XmlToDatabaseDto>chunk(10)
+                .<XmlToDatabaseDto, XmlToDatabaseEntity>chunk(10)
                 .reader(xmlToDatabaseReaderXStream())
                 .processor(xmlToDatabaseProcessor())
-                .writer(xmlToDatabaseWriter())
+                .writer(xmlToDatabaseWriterWithRepository())
                 .build();
     }
 
@@ -94,17 +98,21 @@ public class XmlToDatabaseJobConfig {
 
     @Bean
     @Qualifier("xmlToDatabaseProcessor")
-    public ItemProcessor<XmlToDatabaseDto, XmlToDatabaseDto> xmlToDatabaseProcessor() {
+    public ItemProcessor<XmlToDatabaseDto, XmlToDatabaseEntity> xmlToDatabaseProcessor() {
         return input -> {
-            input.setEmail(input.getEmail() != null ? input.getEmail().toUpperCase() : "");
-            return input;
+            return XmlToDatabaseEntity.builder()
+                    .id(input.getId())
+                    .firstName(input.getFirstName())
+                    .lastName(input.getLastName())
+                    .email(input.getEmail() != null ? input.getEmail().toUpperCase() : "")
+                    .build();
         };
     }
 
     @Bean
     @Qualifier("xmlToDatabaseWriter")
-    public JdbcBatchItemWriter<XmlToDatabaseDto> xmlToDatabaseWriter() {
-        JdbcBatchItemWriter<XmlToDatabaseDto> writer = new JdbcBatchItemWriter<>();
+    public ItemWriter<XmlToDatabaseEntity> xmlToDatabaseWriter() {
+        JdbcBatchItemWriter<XmlToDatabaseEntity> writer = new JdbcBatchItemWriter<>();
         writer.setDataSource(dataSource);
         writer.setSql("INSERT INTO xml_to_database (id, first_name, last_name, email) values (?, ?, ?, ?)");
         writer.setItemPreparedStatementSetter((item, ps) -> {
@@ -114,5 +122,11 @@ public class XmlToDatabaseJobConfig {
             ps.setString(4, item.getEmail());
         });
         return writer;
+    }
+
+    @Bean
+    @Qualifier("xmlToDatabaseWriterWithRepository")
+    public ItemWriter<XmlToDatabaseEntity> xmlToDatabaseWriterWithRepository() {
+        return list -> xmlToDatabaseRepository.saveAll(list);
     }
 }
