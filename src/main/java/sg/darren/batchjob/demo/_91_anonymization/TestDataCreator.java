@@ -1,6 +1,7 @@
 package sg.darren.batchjob.demo._91_anonymization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -12,6 +13,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 
+@Slf4j
 public class TestDataCreator {
 
     private static final int LIST_SIZE = 500000;
@@ -24,8 +26,10 @@ public class TestDataCreator {
 
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < NR_OF_FILES; i++) {
+            log.info("Generating file of index {}...", i + 1);
             writeTestDataToFile();
         }
+        log.info("Completed.");
     }
 
     private static void writeTestDataToFile() throws IOException {
