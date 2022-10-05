@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <XmlToDatabase>
+        <id>1</id>
+        <firstName>John</firstName>
+        <lastName>Doe</lastName>
+        <email>john.doe@gmail.com</email>
+    </XmlToDatabase>
+    <XmlToDatabase>
+        <id>2</id>
+        <firstName>David</firstName>
+        <lastName>Lee</lastName>
+        <email>david.lee@gmail.com</email>
+    </XmlToDatabase>
+</data>

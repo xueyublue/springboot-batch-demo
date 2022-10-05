@@ -33,6 +33,10 @@ public class JobController {
     private Job databaseToCsvJob;
 
     @Autowired
+    @Qualifier("xmlToDatabaseJob")
+    private Job xmlToDatabaseJob;
+
+    @Autowired
     private DatabaseToCsvRepository databaseToCsvRepository;
 
     @GetMapping("/csvToDatabase")
@@ -73,6 +77,23 @@ public class JobController {
         map.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(map);
         JobExecution jobExecution = jobLauncher.run(databaseToCsvJob, jobParameters);
+        while (jobExecution.isRunning()) {
+            log.info("Running...");
+        }
+        log.info("Completed.");
+        return jobExecution.getStatus();
+    }
+
+    @GetMapping("/xmlToDatabase")
+    public BatchStatus xmlToDatabase()
+            throws JobInstanceAlreadyCompleteException,
+            JobExecutionAlreadyRunningException,
+            JobParametersInvalidException,
+            JobRestartException {
+        Map<String, JobParameter> map = new HashMap<>();
+        map.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameters = new JobParameters(map);
+        JobExecution jobExecution = jobLauncher.run(xmlToDatabaseJob, jobParameters);
         while (jobExecution.isRunning()) {
             log.info("Running...");
         }
