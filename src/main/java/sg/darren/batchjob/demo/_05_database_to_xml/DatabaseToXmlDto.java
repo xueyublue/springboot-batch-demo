@@ -1,9 +1,6 @@
 package sg.darren.batchjob.demo._05_database_to_xml;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.*;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
 @Setter
@@ -11,8 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "DatabaseToXml")
-@XStreamAlias("DatabaseToXml")
 public class DatabaseToXmlDto {
 
     private Integer id;

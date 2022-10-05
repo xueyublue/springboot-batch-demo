@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.oxm.xstream.XStreamMarshaller;
-import sg.darren.batchjob.demo._04_xml_to_database.XmlToDatabaseDto;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -103,14 +102,21 @@ public class DatabaseToXmlJobConfig {
     @Bean
     @Qualifier("databaseToXmlWriter")
     public ItemWriter<DatabaseToXmlDto> databaseToXmlWriter() {
-        Map<String, String> aliasMap = new HashMap<>();
-        aliasMap.put("DatabaseToXml", XmlToDatabaseDto.class.getName());
+        Map<String, Class<?>> aliasMap = new HashMap<>();
+        aliasMap.put("DatabaseToXml", DatabaseToXmlDto.class);
+
+        Map<String, String> fieldAlias = new HashMap<>();
+        fieldAlias.put(DatabaseToXmlDto.class.getName() + ".id", "ID");
+        fieldAlias.put(DatabaseToXmlDto.class.getName() + ".firstName", "FirstName");
+        fieldAlias.put(DatabaseToXmlDto.class.getName() + ".lastName", "LastName");
+        fieldAlias.put(DatabaseToXmlDto.class.getName() + ".email", "Email");
 
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasMap);
+        marshaller.setFieldAliases(fieldAlias);
         marshaller.setTypePermissions(
                 new ExplicitTypePermission(
-                        new Class[]{XmlToDatabaseDto.class}
+                        new Class[]{DatabaseToXmlDto.class}
                 )
         );
 
