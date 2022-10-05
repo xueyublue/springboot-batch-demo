@@ -1,5 +1,6 @@
 package sg.darren.batchjob.demo._04_xml_to_database;
 
+import com.thoughtworks.xstream.security.ExplicitTypePermission;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -49,7 +50,7 @@ public class XmlToDatabaseJobConfig {
     public Step xmlToDatabaseStep() {
         return stepBuilderFactory.get("xmlToDatabaseJobStep")
                 .<XmlToDatabaseDto, XmlToDatabaseDto>chunk(10)
-                .reader(xmlToDatabaseReaderJaxb2())
+                .reader(xmlToDatabaseReaderXStream())
                 .processor(xmlToDatabaseProcessor())
                 .writer(xmlToDatabaseWriter())
                 .build();
@@ -57,12 +58,17 @@ public class XmlToDatabaseJobConfig {
 
     @Bean
     @Qualifier("xmlToDatabaseReader")
-    public ItemReader<XmlToDatabaseDto> xmlToDatabaseReader() {
+    public ItemReader<XmlToDatabaseDto> xmlToDatabaseReaderXStream() {
         Map<String, String> aliasMap = new HashMap<>();
-        aliasMap.put("XmlToDatabase", "sg.darren.batchjob.demo._04_xml_to_database.XmlToDatabaseDto");
+        aliasMap.put("XmlToDatabase", XmlToDatabaseDto.class.getName());
 
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasMap);
+        marshaller.setTypePermissions(
+                new ExplicitTypePermission(
+                        new Class[]{XmlToDatabaseDto.class}
+                )
+        );
 
         StaxEventItemReader<XmlToDatabaseDto> reader = new StaxEventItemReader<>();
         reader.setResource(new FileSystemResource("_04_xml_to_database/input.xml"));

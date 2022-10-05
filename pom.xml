@@ -48,6 +48,7 @@
             <artifactId>xstream</artifactId>
             <version>1.4.19</version>
         </dependency>
+        <!-- Required only if you are using XmlToDatabaseJobConfig.xmlToDatabaseReaderJaxb2() -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
