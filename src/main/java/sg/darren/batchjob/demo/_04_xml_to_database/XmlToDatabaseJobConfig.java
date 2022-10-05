@@ -12,7 +12,6 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,17 +26,17 @@ import java.util.Map;
 @Configuration
 public class XmlToDatabaseJobConfig {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final DataSource dataSource;
+    private final XmlToDatabaseRepository xmlToDatabaseRepository;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private XmlToDatabaseRepository xmlToDatabaseRepository;
+    public XmlToDatabaseJobConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, DataSource dataSource, XmlToDatabaseRepository xmlToDatabaseRepository) {
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.dataSource = dataSource;
+        this.xmlToDatabaseRepository = xmlToDatabaseRepository;
+    }
 
     @Bean
     @Qualifier("xmlToDatabaseJob")
@@ -127,6 +126,6 @@ public class XmlToDatabaseJobConfig {
     @Bean
     @Qualifier("xmlToDatabaseWriterWithRepository")
     public ItemWriter<XmlToDatabaseEntity> xmlToDatabaseWriterWithRepository() {
-        return list -> xmlToDatabaseRepository.saveAll(list);
+        return xmlToDatabaseRepository::saveAll;
     }
 }
