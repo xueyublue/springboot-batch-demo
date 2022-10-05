@@ -14,8 +14,8 @@ import sg.darren.batchjob.demo._03_database_to_csv.DatabaseToCsvEntity;
 import sg.darren.batchjob.demo._03_database_to_csv.DatabaseToCsvRepository;
 import sg.darren.batchjob.demo._05_database_to_xml.DatabaseToXmlEntity;
 import sg.darren.batchjob.demo._05_database_to_xml.DatabaseToXmlRepository;
+import sg.darren.batchjob.demo.utils.RandomDataGenerator;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,10 +51,7 @@ public class JobController {
     @GetMapping("/csvToDatabase")
     public BatchStatus csvToDatabase()
             throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        Map<String, JobParameter> map = new HashMap<>();
-        map.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(map);
-        JobExecution jobExecution = jobLauncher.run(csvToDatabaseJob, jobParameters);
+        JobExecution jobExecution = jobLauncher.run(csvToDatabaseJob, getNewJobParameters());
         while (jobExecution.isRunning()) {
             log.info("Running...");
         }
@@ -67,19 +64,16 @@ public class JobController {
             throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         // insert initial data
         if (databaseToCsvRepository.findAll().isEmpty()) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 databaseToCsvRepository.save(DatabaseToCsvEntity.builder()
-                        .firstName(new Date().toString())
-                        .lastName(new Date().toString())
-                        .email(new Date().toString() + "@gmail.com")
+                        .firstName(RandomDataGenerator.getFirstName())
+                        .lastName(RandomDataGenerator.getLastName())
+                        .email(RandomDataGenerator.getEmail())
                         .build());
             }
         }
         // run job
-        Map<String, JobParameter> map = new HashMap<>();
-        map.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(map);
-        JobExecution jobExecution = jobLauncher.run(databaseToCsvJob, jobParameters);
+        JobExecution jobExecution = jobLauncher.run(databaseToCsvJob, getNewJobParameters());
         while (jobExecution.isRunning()) {
             log.info("Running...");
         }
@@ -90,10 +84,7 @@ public class JobController {
     @GetMapping("/xmlToDatabase")
     public BatchStatus xmlToDatabase()
             throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        Map<String, JobParameter> map = new HashMap<>();
-        map.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(map);
-        JobExecution jobExecution = jobLauncher.run(xmlToDatabaseJob, jobParameters);
+        JobExecution jobExecution = jobLauncher.run(xmlToDatabaseJob, getNewJobParameters());
         while (jobExecution.isRunning()) {
             log.info("Running...");
         }
@@ -108,21 +99,24 @@ public class JobController {
         if (databaseToXmlRepository.findAll().isEmpty()) {
             for (int i = 0; i < 5; i++) {
                 databaseToXmlRepository.save(DatabaseToXmlEntity.builder()
-                        .firstName(new Date().toString())
-                        .lastName(new Date().toString())
-                        .email(new Date().toString() + "@gmail.com")
+                        .firstName(RandomDataGenerator.getFirstName())
+                        .lastName(RandomDataGenerator.getLastName())
+                        .email(RandomDataGenerator.getEmail())
                         .build());
             }
         }
         // run job
-        Map<String, JobParameter> map = new HashMap<>();
-        map.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(map);
-        JobExecution jobExecution = jobLauncher.run(databaseToXmlJob, jobParameters);
+        JobExecution jobExecution = jobLauncher.run(databaseToXmlJob, getNewJobParameters());
         while (jobExecution.isRunning()) {
             log.info("Running...");
         }
         log.info("Completed.");
         return jobExecution.getStatus();
+    }
+
+    private JobParameters getNewJobParameters() {
+        Map<String, JobParameter> map = new HashMap<>();
+        map.put("time", new JobParameter(System.currentTimeMillis()));
+        return new JobParameters(map);
     }
 }
