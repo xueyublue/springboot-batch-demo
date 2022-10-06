@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class TriggerBatchJobService {
 
@@ -25,7 +27,7 @@ public class TriggerBatchJobService {
             JobParametersInvalidException,
             JobRestartException {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addParameter("output", new JobParameter("Hello World"))
+                .addParameter("output", new JobParameter("Hello World " + new Date().getTime()))
                 .toJobParameters();
         jobLauncher.run(job, jobParameters);
     }
